@@ -52,17 +52,21 @@ def create_app(test_config=None):
 
     @app.route('/categories')
     def get_categories():
-        categories = Category.query.order_by(Category.id).all()
-        # print('categories', categories)
-        # print('categories_obj', to_dict(categories))
+        try:
+            categories = Category.query.order_by(Category.id).all()
+            # print('categories', categories)
+            # print('categories_obj', to_dict(categories))
 
-        return jsonify(
-            {
-                "success": True,
-                "categories": to_dict(categories),
+            return jsonify(
+                {
+                    "success": True,
+                    "categories": to_dict(categories),
 
-            }
-        ), 200
+                }
+            ), 200
+
+        except:
+            abort(404)
     # """
     # @TODO:
     # Create an endpoint to handle GET requests for questions,
@@ -115,8 +119,8 @@ def create_app(test_config=None):
                 abort(404)
 
             question.delete()
-            ordered_questions = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, ordered_questions)
+            # ordered_questions = Question.query.order_by(Question.id).all()
+            # current_questions = paginate_questions(request, ordered_questions)
 
             return jsonify(
                 {
@@ -125,7 +129,7 @@ def create_app(test_config=None):
                     # "questions": current_questions,
                     # "total_questions": len(ordered_questions),
                 }
-            )
+            ), 200
 
         except:
             abort(422)
@@ -271,7 +275,7 @@ def create_app(test_config=None):
                 'question': next_question.format(),
             })
         except:
-            abort(422)
+            abort(400)
     # """
     # @TODO:
     # Create error handlers for all expected errors

@@ -2,10 +2,13 @@ import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
+from dotenv import load_dotenv
 
-database_name = 'trivia'
-database_path = 'postgresql://{}/{}'.format('localhost:5432', database_name)
-database_uri = 'postgresql://postgres:001postgresqlmega@localhost:5432/trivia'
+load_dotenv()
+DB_PATH = os.getenv('DB_PATH')
+# database_name = 'trivia'
+# database_path = 'postgresql://{}/{}'.format('localhost:5432', database_name)
+# database_uri = 'postgresql://postgres:001postgresqlmega@localhost:5432/trivia'
 db = SQLAlchemy()
 
 """
@@ -14,8 +17,8 @@ setup_db(app)
 """
 
 
-def setup_db(app, database_path=database_uri):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+def setup_db(app, database_path=DB_PATH):
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_PATH
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
