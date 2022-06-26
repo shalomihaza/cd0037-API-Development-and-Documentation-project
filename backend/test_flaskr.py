@@ -48,7 +48,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_categories_failed(self):
 
-        response = self.client().get('/categories?page=100000')
+        response = self.client().get('/categories/45')
         data = json.loads(response.data)
 
         self.assertEqual(data['error'], 404)
@@ -74,11 +74,11 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     def test_delete_question_success(self):
-        response = self.client().delete('questions/20')
+        response = self.client().delete('/questions/4')
         data = json.loads(response.data)
 
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 20)
+        self.assertEqual(data['deleted'], 4)
 
     def test_delete_question_failed(self):
         response = self.client().delete('questions/2000')
@@ -134,8 +134,8 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(response.data)
 
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['error'], 422)
-        self.assertEqual(data['message'], "unprocessable")
+        self.assertEqual(data['error'], 405)
+        self.assertEqual(data['message'], "method not allowed")
 
     def test_get_questions_by_category_success(self):
         response = self.client().get('/categories/3/questions')

@@ -116,18 +116,14 @@ def create_app(test_config=None):
                 Question.id == question_id).one_or_none()
 
             if question is None:
-                abort(404)
+                abort(422)
 
             question.delete()
-            # ordered_questions = Question.query.order_by(Question.id).all()
-            # current_questions = paginate_questions(request, ordered_questions)
 
             return jsonify(
                 {
                     "success": True,
                     "deleted": question_id,
-                    # "questions": current_questions,
-                    # "total_questions": len(ordered_questions),
                 }
             ), 200
 
@@ -171,7 +167,7 @@ def create_app(test_config=None):
             )
 
         except:
-            abort(422)
+            abort(405)
     # """
     # @TODO:
     # Create a POST endpoint to get questions based on a search term.
