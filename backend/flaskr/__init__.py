@@ -29,7 +29,7 @@ def to_dict(items):
 
 
 def create_app(test_config=None):
-    # create and configure the app
+
     app = Flask(__name__)
     setup_db(app)
 
@@ -145,29 +145,35 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
-        question = body.get("question", None)
-        answer = body.get("answer", None)
+        question_string = body.get("question", '')
+        answer = body.get("answer", '')
         category = body.get("category", None)
         difficulty = body.get("difficulty", None)
 
-        try:
-            question = Question(question=question, answer=answer,
-                                category=category, difficulty=difficulty)
-            question.insert()
-
-            ordered_questions = Question.query.order_by(Question.id).all()
-            # current_questions = paginate_questions(request, ordered_questions)
-
-            return jsonify(
-                {
-                    "success": True,
-                    "created": question.id,
-                    "total_questions": len(ordered_questions),
-                }
-            )
-
-        except:
+        if ((question_string == '') or (answer is '')):
+            # print('no question/answer')
             abort(405)
+
+            return
+        else:
+            try:
+
+                question = Question(question=question_string, answer=answer,
+                                    category=category, difficulty=difficulty)
+                question.insert()
+
+                ordered_questions = Question.query.order_by(Question.id).all()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "created": question.id,
+                        "total_questions": len(ordered_questions),
+                    }
+                )
+
+            except:
+                abort(405)
     # """
     # @TODO:
     # Create a POST endpoint to get questions based on a search term.
@@ -193,7 +199,6 @@ def create_app(test_config=None):
 
         current_questions = paginate_questions(request, questions)
 
-        # return response if successful
         return jsonify(
             {
                 'success': True,
@@ -272,11 +277,6 @@ def create_app(test_config=None):
             })
         except:
             abort(400)
-    # """
-    # @TODO:
-    # Create error handlers for all expected errors
-    # including 404 and 422.
-    # """
 
     @ app.errorhandler(404)
     def not_found(error):
